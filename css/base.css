@@ -10,21 +10,12 @@ html {
 }
 body {
   margin: 0 0 60px;
-  background-color: #f5f9ff;
+  background-color: #fff;
   font-family: 'Open Sans', sans-serif;
   font-size: 1.6rem;
   line-height: 1.4;
   font-weight: 500;
   color: #192e4d;
-}
-.container {
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 30px;
-  padding-left: 30px;
-  width: 100%;
-  max-width: 1200px;
-  overflow: hidden;
 }
 
 /* Type */
@@ -80,4 +71,22 @@ a:hover, a:focus {
 }
 .sources li {
   margin: 5px 0;
+}
+
+/* Instructions */
+.instructions {
+  max-width: 500px;
+  margin-top: 30px;
+  padding: 15px 20px 15px 50px;
+  background-color: rgba(239, 169, 174, 0.3);
+  background-image: url(../assets/bulb.svg);
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-size: auto 25px;
+  border-radius: 4px;
+}
+@media (max-width: 700px) {
+  .instructions {
+    margin-bottom: 30px;
+  }
 }

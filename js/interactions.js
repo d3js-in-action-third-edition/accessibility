@@ -1,10 +1,14 @@
 const populateFilters = () => {
 
   const filters = d3.select("#filters")
+    .append("ul")
     .selectAll(".filter")
     .data(cetaceanFilters)
-    .join("button")
-      .attr("class", d => `filter filter-${d.id} ${d.isActive ? "active" : ""}`);
+    .join("li")
+    .append("button")
+      .attr("class", d => `filter filter-${d.id} ${d.isActive ? "active" : ""}`)
+      .attr("type", "button")
+      .attr("aria-pressed", d => d.isActive ? true : false);
 
   filters
     .append("span")
@@ -30,35 +34,38 @@ const handleClickOnFilter = (data) => {
           h.isActive = h.id === datum.id ? true : false;
         });
         d3.selectAll(".filter")
-          .classed("active", d => d.id === datum.id ? true : false);
+          .classed("active", d => d.id === datum.id ? true : false)
+          .attr("aria-pressed", d => d.isActive ? true : false);
 
         // Update scatterplot
         const updatedData = datum.id === "all"
           ? data
-          : data.filter(d => d.hemisphere === datum.id);
+          : data.filter(d => d.hemisphere === datum.id)
+                .sort((a, b) => a.global_population_estimate - b.global_population_estimate);
 
         // Reusable transition
         const t = d3.transition()
           .duration(800)
           .ease(d3.easeExpOut);
 
-          innerChart
+        innerChart
           .selectAll("circle")
           .data(updatedData, d => d.uid)
           .join(
             enter => enter
               .append("circle")
-                .attr("class", "cetacean")
+                .attr("class", d => `cetacean cetacean-${d.status}`)
                 .attr("cx", d => xScale(d.global_population_estimate))
                 .attr("cy", d => -50)
                 .attr("r", 0)
-                .attr("fill", d => colorScale(d.status))
+                .attr("fill", d => getPattern(d.status))
                 .attr('fill-opacity', 0.6)
                 .attr("stroke", d => colorScale(d.status))
                 .attr("stroke-width", 2)
                 .style('opacity', 0)
-                .on("mouseenter", showTooltip)
-                .on("mouseleave", hideTooltip)
+                .attr("tabindex", 0)
+                .on("mouseenter focus", showTooltip)
+                .on("mouseleave blur", hideTooltip)
               .call(enter => enter.transition(t)
                 .attr("cy", d => yScale(d.max_size_m))
                 .attr("r", d => rScale(d.max_weight_t))

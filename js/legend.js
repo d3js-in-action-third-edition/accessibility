@@ -8,15 +8,23 @@ const populateLegend = (data) => {
     .join("li")
       .attr("class", "conservation-status");
 
-  statuses
+  const legendConservationStatuses = statuses
     .append("svg")
       .attr("width", 32)
       .attr("height", 32)
+      .attr("role", "img")
+      .attr("aria-labelledby", d => `legendCS-${d.id}`);
+  legendConservationStatuses
+    .append("title")
+      .attr("id", d => `legendCS-${d.id}`)
+      .text(d => `Color legend for the conservation status ${d.label}`);
+  legendConservationStatuses
     .append("circle")
       .attr("cx", 16)
       .attr("cy", 16)
       .attr("r", 15)
-      .attr("fill", d => d.color)
+      // .attr("fill", d => d.color)
+      .attr("fill", d => getPattern(d.id))
       .attr('fill-opacity', 0.6)
       .attr("stroke", d => d.color)
       .attr("stroke-width", 2);
@@ -27,10 +35,21 @@ const populateLegend = (data) => {
 
 
   // Weight
-  const sizes = d3.select(".legend-weight")
+  const legendArea = d3.select(".legend-weight")
     .append("svg")
       .attr("width", 180)
       .attr("height", 120)
+      .attr("role", "img")
+      .attr("aria-labelledby", "legendAreasTitle legendAreasDescription");
+  legendArea
+    .append("title")
+      .attr("id", "legendAreasTitle")
+      .text("Legend for the area of the circles");
+  legendArea
+    .append("desc")
+      .attr("id", "legendAreasDescription")
+      .text("Three circles representing a weight of 180, 90 and 10 tons.");
+  const sizes = legendArea
     .append("g")
       .attr("transform", "translate(0, 10)");
 
@@ -40,20 +59,22 @@ const populateLegend = (data) => {
   const circles = sizes 
     .append("g")
       .attr("fill", "#192e4d")
-      .attr("fill-opacity", 0.3);
+      .attr("fill-opacity", 0.3)
+      .attr("stroke", "#192e4d")
+      .attr("stroke-width", 2);
   circles
     .append("circle")
-      .attr("cx", rScale(maxWeight))
+      .attr("cx", rScale(maxWeight) + 1)
       .attr("cy", rScale(maxWeight))
       .attr("r", rScale(maxWeight));
   circles
     .append("circle")
-      .attr("cx", rScale(maxWeight))
+      .attr("cx", rScale(maxWeight) + 1)
       .attr("cy", 2*rScale(maxWeight) - rScale(mediumWeight))
       .attr("r", rScale(mediumWeight));
   circles
     .append("circle")
-      .attr("cx", rScale(maxWeight))
+      .attr("cx", rScale(maxWeight) + 1)
       .attr("cy", 2*rScale(maxWeight) - rScale(lowWeight))
       .attr("r", rScale(lowWeight));
 
